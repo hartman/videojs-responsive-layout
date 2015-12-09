@@ -1,0 +1,93 @@
+{
+  "name": "videojs-responsive-layout",
+  "description": "A plugin which reacts to the width of your Video.js player to change the layout.",
+  "author": "Derk-Jan Hartman",
+  "license": "MIT",
+  "version": "0.0.0",
+  "main": "es5/plugin.js",
+  "keywords": [
+    "videojs",
+    "videojs-plugin"
+  ],
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "qunit": "global:QUnit",
+    "sinon": "global:sinon",
+    "video.js": "global:videojs"
+  },
+  "vjsstandard": {
+    "ignore": [
+      "dist",
+      "dist-test",
+      "docs",
+      "es5",
+      "test/karma",
+      "scripts"
+    ]
+  },
+  "scripts": {
+    "prebuild": "npm run clean",
+    "build": "npm-run-all -p build:*",
+    "build:js": "npm-run-all mkdirs build:js:babel build:js:browserify build:js:bannerize build:js:uglify",
+    "build:js:babel": "babel src -d es5",
+    "build:js:bannerize": "bannerize dist/videojs-responsive-layout.js --banner=scripts/banner.ejs",
+    "build:js:browserify": "browserify . -s videojs-responsive-layout --ignore jquery  -o dist/videojs-responsive-layout.js",
+    "build:js:uglify": "uglifyjs dist/videojs-responsive-layout.js --comments --mangle --compress -o dist/videojs-responsive-layout.min.js",
+    "build:test": "npm-run-all mkdirs build:test:browserify",
+    "build:test:browserify": "browserify  `find test -name '*.test.js'` -t babelify -o dist-test/videojs-responsive-layout.js",
+    "clean": "rm -rf dist dist-test es5",
+    "lint": "vjsstandard",
+    "mkdirs": "mkdir -p dist dist-test es5",
+    "prestart": "npm-run-all build",
+    "start": "npm-run-all -p start:serve watch",
+    "start:serve": "babel-node scripts/server.js",
+    "pretest": "npm-run-all lint build:test",
+    "test": "karma start test/karma/detected.js",
+    "test:chrome": "npm run pretest && karma start test/karma/chrome.js",
+    "test:firefox": "npm run pretest && karma start test/karma/firefox.js",
+    "test:ie": "npm run pretest && karma start test/karma/ie.js",
+    "test:safari": "npm run pretest && karma start test/karma/safari.js",
+    "preversion": "npm test",
+    "version": "npm run build",
+    "postversion": "git push origin master && git push origin --tags",
+    "watch": "npm run mkdirs && npm-run-all -p watch:*",
+    "watch:js": "watchify src/plugin.js -t babelify -v -o dist/videojs-responsive-layout.js",
+    "watch:test": "watchify `find test -name '*.test.js'` -t babelify -o dist-test/videojs-responsive-layout.js"
+  },
+  "dependencies": {
+    "throttle-debounce": "^0.1.1",
+    "video.js": "^5.0.0"
+  },
+  "devDependencies": {
+    "babel": "^5.8.0",
+    "babelify": "^6.0.0",
+    "bannerize": "^1.0.0",
+    "browserify": "^11.0.0",
+    "browserify-shim": "^3.0.0",
+    "connect": "^3.4.0",
+    "cowsay": "^1.1.0",
+    "global": "^4.3.0",
+    "karma": "^0.13.0",
+    "karma-browserify": "^4.4.0",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-detect-browsers": "^2.0.0",
+    "karma-firefox-launcher": "^0.1.0",
+    "karma-ie-launcher": "^0.2.0",
+    "karma-qunit": "^0.1.0",
+    "karma-safari-launcher": "^0.1.0",
+    "lodash-compat": "^3.10.0",
+    "minimist": "^1.2.0",
+    "npm-run-all": "~1.2.0",
+    "portscanner": "^1.0.0",
+    "qunitjs": "^1.0.0",
+    "serve-static": "^1.10.0",
+    "sinon": "^1.0.0",
+    "uglify-js": "^2.5.0",
+    "videojs-standard": "^4.0.0",
+    "watchify": "^3.6.0"
+  }
+}

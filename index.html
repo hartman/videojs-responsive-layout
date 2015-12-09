@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>videojs-responsive-layout Demo</title>
+  <link href="/node_modules/video.js/dist/video-js.css" rel="stylesheet">
+  <style>
+    .video-js .vjs-progress-control {
+      min-width: 4em;
+    }
+  </style>
+</head>
+<body>
+  <input type="range" id="player_size" min="10" max="960" value="960" step="10" style="width:960px;"/>
+  <video id="videojs-responsive-layout-player" class="video-js vjs-default-skin" controls>
+    <source src="//vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
+    <source src="//vjs.zencdn.net/v/oceans.webm" type='video/webm'>
+  </video>
+  <ul>
+    <li><a href="/test/">Run unit tests in browser.</a></li>
+  </ul>
+  <script src="/node_modules/video.js/dist/video.js"></script>
+  <script src="/dist/videojs-responsive-layout.js"></script>
+  <script>
+    (function(window, videojs) {
+      var player = window.player = videojs('videojs-responsive-layout-player', {
+        controlBar: {
+
+        },
+        plugins: {
+          responsiveLayout: {}
+        }
+      });
+      //player.responsiveLayout();
+      document.getElementById( 'player_size').addEventListener( 'change', function (e) {
+        player.width( e.target.value );
+        player.trigger( 'resize' );
+      });
+    }(window, window.videojs));
+  </script>
+</body>
+</html>
