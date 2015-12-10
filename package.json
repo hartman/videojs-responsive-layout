@@ -35,7 +35,7 @@
     "build:js": "npm-run-all mkdirs build:js:babel build:js:browserify build:js:bannerize build:js:uglify",
     "build:js:babel": "babel src -d es5",
     "build:js:bannerize": "bannerize dist/videojs-responsive-layout.js --banner=scripts/banner.ejs",
-    "build:js:browserify": "browserify . -s videojs-responsive-layout --ignore jquery  -o dist/videojs-responsive-layout.js",
+    "build:js:browserify": "browserify . -s videojs-responsive-layout --ignore jquery -o dist/videojs-responsive-layout.js",
     "build:js:uglify": "uglifyjs dist/videojs-responsive-layout.js --comments --mangle --compress -o dist/videojs-responsive-layout.min.js",
     "build:test": "npm-run-all mkdirs build:test:browserify",
     "build:test:browserify": "browserify  `find test -name '*.test.js'` -t babelify -o dist-test/videojs-responsive-layout.js",
@@ -55,7 +55,7 @@
     "version": "npm run build",
     "postversion": "git push origin master && git push origin --tags",
     "watch": "npm run mkdirs && npm-run-all -p watch:*",
-    "watch:js": "watchify src/plugin.js -t babelify -v -o dist/videojs-responsive-layout.js",
+    "watch:js": "watchify src/plugin.js -t babelify --ignore jquery -v -o dist/videojs-responsive-layout.js",
     "watch:test": "watchify `find test -name '*.test.js'` -t babelify -o dist-test/videojs-responsive-layout.js"
   },
   "dependencies": {
