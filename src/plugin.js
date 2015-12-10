@@ -186,7 +186,7 @@ class Layouter {
 
     this.player.on(['play', 'resize'], () => this.debouncedCheckSize_());
     this.player.on('dispose', function() {
-      window.removeEventListener(this.windowResizeListener_);
+      window.removeEventListener('resize', this.windowResizeListener_);
     });
 
     // Let's do the first measure
