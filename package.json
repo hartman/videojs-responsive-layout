@@ -2,7 +2,7 @@
   "name": "videojs-responsive-layout",
   "description": "A plugin which reacts to the width of your Video.js player to change the layout.",
   "author": "Derk-Jan Hartman",
-  "license": "MIT",
+  "license": "(MIT OR Apache-2.0)",
   "version": "0.0.0",
   "repository": "hartman/videojs-responsive-layout",
   "main": "es5/plugin.js",
