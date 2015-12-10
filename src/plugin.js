@@ -140,10 +140,9 @@ const responsiveLayout = function(options) {
     let controlBarWidth = 0;
     let progressWidth = outerWidth(el_.querySelectorAll('.vjs-progress-control')[0]);
 
-    // TODO fix jquery dependency
     let cbElements = el_.querySelectorAll('.vjs-control-bar > *');
-    Array.from(cbElements).forEach( function(el) {
-      if( isVisible( el ) ) {
+    Array.from(cbElements).forEach(function(el) {
+      if (isVisible(el)) {
         controlBarWidth += outerWidth(el);
       }
     });
