@@ -1,40 +1,47 @@
 # videojs-responsive-layout
 
-A plugin that reacts to the width of your player to change the layout of your Video.js player
+A plugin that reacts to the width of your player to change the layout of your Video.js player.
 
-### Table of Contents
+This plugin changes the layout of the controlbar of your Video.js player, based on the width of the player. When it has calculated that not all controls will fit inside the player, it applies one of 3 different layout classes, which are provided by the default skin of Video.js.
+```
+* vjs-layout-tiny
+* vjs-layout-x-small
+* vjs-layout-small
+```
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+## Getting started
+Simply install from npm, using `npm install videojs-responsive-layout`.
+Now add the `dist/videojs-responsive-layout.js` or `dist/videojs-responsive-layout.min.js` to your page and make sure it loads after the main `videojs` javascript.
+
+Now configure it like:
+```javascript
+var player = videojs( 'really-cool-video',
+  {
+    controlBar: {
+      volumeMenuButton: {
+          inline: false
+      }
+    },
+    plugins: {
+      responsiveLayout: {}
+    }
+  },
+  function() {
+    console.log('Good to go!');
+    this.play();
+  }
+);
+```
+The `inline:false` option is important, because the plugin cannot deal with an inline and horizontal volume control at this time.
 
 
-- [Getting Started](#getting-started)
-  - [Running Tests](#running-tests)
-  - [Tag and Release](#tag-and-release)
-- [License](#license)
+## Advanced options
+Will follow soon...
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-## Getting Started
-
-1. Clone this repository!
-1. Install dependencies: `npm install`
-1. Run a development server: `npm start`
-
-That's it! Refer to the [video.js plugin standards](https://github.com/videojs/generator-videojs-plugin/docs/standards.md) for more detail.
-
-### Running Tests
-
-- In all available and supported browsers: `npm test`
-- In a specific browser: `npm run test:chrome`, `npm run test:firefox`, etc.
-- While development server is running, navigate to [`http://localhost:9999/test/`](http://localhost:9999/test/) (_note:_ port may vary, check console output)
-
-### Tag and Release
-
-1. Make sure everything is committed.
-1. `npm version *` where `*` is `major`, `minor`, `patch`, etc. [Read more about versioning.](https://github.com/videojs/generator-videojs-plugin/docs/standards.md#versioning)
-1. `npm publish`
+## Contributing
+I really appreciate any help in maintaining and advancing this library. Check out the [contributing guide](CONTRIBUTING.md).
 
 ## License
 
-MIT. Copyright (c) Derk-Jan Hartman
+MIT and Apache-2.0.
+Copyright (c) Derk-Jan Hartman
