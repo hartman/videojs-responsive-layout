@@ -25,7 +25,10 @@
     (function(window, videojs) {
       var player = window.player = videojs('videojs-responsive-layout-player', {
         controlBar: {
-
+          volumeMenuButton: {
+              vertical: true,
+              inline: false
+          }
         },
         plugins: {
           responsiveLayout: {}
