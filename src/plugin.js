@@ -145,6 +145,29 @@ const dimensionsCheck = function() {
   }
 };
 
+const installStylesheet = function() {
+  let style = document.getElementById('vjs-responsive-layout');
+
+  if (!style) {
+    let styleRule = `
+      .vjs-responsive-layout .vjs-progress-control {
+        min-width: 4em;
+      }
+    `;
+    let head = document.getElementsByTagName('head')[0];
+
+    style = document.createElement('style');
+    style.id = 'vjs-responsive-layout';
+
+    if (style.styleSheet) {
+      style.styleSheet.cssText = styleRule;
+    } else {
+      style.textContent = styleRule;
+    }
+    head.insertBefore(style, head.firstChild);
+  }
+};
+
 class Layouter {
   constructor(player, options) {
     this.player_ = player;
@@ -153,7 +176,9 @@ class Layouter {
   }
 
   ready() {
+    installStylesheet();
     this.player.addClass('vjs-responsive-layout');
+
     this.windowResizeListener_ = window.addEventListener(
       'resize',
       () => this.debouncedCheckSize_()
