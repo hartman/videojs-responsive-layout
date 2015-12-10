@@ -164,7 +164,7 @@ const responsiveLayout = function(options) {
   };
   const debouncedCheckSize = debounce(200, checkSize);
 
-  player.on('resize', debouncedCheckSize);
+  player.on(['play', 'resize'], debouncedCheckSize);
   player.on('dispose', function() {
     window.removeEventListener(player.RLwindowListener_);
   });
