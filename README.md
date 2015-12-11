@@ -1,5 +1,7 @@
 # videojs-responsive-layout
 
+[![Current version](https://img.shields.io/npm/v/videojs-responsive-layout.svg)](https://www.npmjs.com/package/videojs-responsive-layout) [![Dependencies](https://img.shields.io/versioneye/d/nodejs/videojs-responsive-layout.svg)](https://www.versioneye.com/nodejs/videojs-responsive-layout)
+
 A plugin that reacts to the width of your player to change the layout of your Video.js player.
 
 This plugin changes the layout of the controlbar of your Video.js player, based on the width of the player. When it has calculated that not all controls will fit inside the player, it applies one of 3 different layout classes, which are provided by the default skin of Video.js.
