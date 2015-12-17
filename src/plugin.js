@@ -4,7 +4,13 @@ const debounce = require('throttle-debounce').debounce;
 
 // Default options for the plugin.
 const defaults = {
-  debounceDelay: 400
+  debounceDelay: 200,
+  layoutMap: [
+    { layoutClassName: 'vjs-layout-tiny', width: 2},
+    { layoutClassName: 'vjs-layout-x-small', width: 3},
+    { layoutClassName: 'vjs-layout-small', width: 4},
+    { layoutClassName: 'defaults', width: 5}
+  ]
 };
 
 /**
@@ -14,7 +20,7 @@ const defaults = {
  * @param    {Element} el to measure
  * @return   {number} the width of the element in pixels
  */
-const getElementOuterWidth = (el) => {
+const getElementOuterWidth = function(el) {
   let width = el.offsetWidth;
   let style = getComputedStyle(el);
 
@@ -29,7 +35,7 @@ const getElementOuterWidth = (el) => {
  * @param    {Element} el to measure
  * @return   {number} the width of the element in pixels
  */
-const getElementWidth = (el) => {
+const getElementWidth = function(el) {
   return parseInt(getComputedStyle(el).width, 10);
 };
 
@@ -42,106 +48,68 @@ const getElementWidth = (el) => {
  * @param    {Element} el to test
  * @return   {boolean} true if el is visible
  */
-const isElementVisible = (el) => {
+const isElementVisible = function(el) {
   return (el.offsetWidth > 0 || el.offsetHeight > 0);
 };
 
-/**
- * Set a video.js layout class on an element
- *
- * A layout can be: vjs-layout-tiny, vjs-layout-x-small, vjs-layout-small.
- * Anything else will reset back to defaults
- *
- * @function setVideoJsLayout
- * @param    {Player} player to apply the layout to
- * @param    {string} layoutClass name of the class to be set
- * @return   {boolean} true if el is visible
- */
-const setVideoJsLayout = (player, layoutClass) => {
-  let el = player.el();
-
-  if (layoutClass === 'vjs-layout-tiny') {
-    videojs.addClass(el, 'vjs-layout-tiny');
-    videojs.removeClass(el, 'vjs-layout-small');
-    videojs.removeClass(el, 'vjs-layout-x-small');
-  } else if (layoutClass === 'vjs-layout-x-small') {
-    videojs.addClass(el, 'vjs-layout-x-small');
-    videojs.removeClass(el, 'vjs-layout-tiny');
-    videojs.removeClass(el, 'vjs-layout-small');
-  } else if (layoutClass === 'vjs-layout-small') {
-    videojs.addClass(el, 'vjs-layout-small');
-    videojs.removeClass(el, 'vjs-layout-tiny');
-    videojs.removeClass(el, 'vjs-layout-x-small');
-  } else {
-    videojs.removeClass(el, 'vjs-layout-tiny');
-    videojs.removeClass(el, 'vjs-layout-x-small');
-    videojs.removeClass(el, 'vjs-layout-small');
-  }
-};
-
-const makeBigger = (player) => {
-  let el = player.el();
-
-  if (videojs.hasClass(el, 'vjs-layout-tiny')) {
-    setVideoJsLayout(player, 'vjs-layout-x-small');
-  } else if (videojs.hasClass(el, 'vjs-layout-x-small')) {
-    setVideoJsLayout(player, 'vjs-layout-small');
-  } else if (videojs.hasClass(el, 'vjs-layout-small')) {
-    setVideoJsLayout(player, 'default');
-  } else {
-    return;
-  }
-  player.trigger('resize');
-};
-
-const makeSmaller = (player) => {
-  let el = player.el();
-
-  if (videojs.hasClass(el, 'vjs-layout-tiny')) {
-    return;
-  } else if (videojs.hasClass(el, 'vjs-layout-x-small')) {
-    setVideoJsLayout(player, 'vjs-layout-tiny');
-  } else if (videojs.hasClass(el, 'vjs-layout-small')) {
-    setVideoJsLayout(player, 'vjs-layout-x-small');
-  } else {
-    setVideoJsLayout(player, 'vjs-layout-small');
-  }
-  player.trigger('resize');
-};
-
-const updateVideoJsLayout = (layouter, playerWidth, controlBarWidth, controlWidth) => {
-  let progressWidth = getElementOuterWidth(
-    layouter.el.querySelectorAll('.vjs-progress-control')[0]
-  );
-
-  if (controlBarWidth > playerWidth) {
-    makeSmaller(layouter.player);
-  } else if ((videojs.hasClass(layouter.el, 'vjs-layout-x-small') ||
-               videojs.hasClass(layouter.el, 'vjs-layout-small')) &&
-               // progressbar more that twice it's default size
-               progressWidth > controlWidth * 2
-  ) {
-    makeBigger(layouter.player);
-  } else if (playerWidth > controlBarWidth + controlWidth &&
-             !videojs.hasClass(layouter.el, 'vjs-layout-x-small') &&
-             !videojs.hasClass(layouter.el, 'vjs-layout-small')
-  ) {
-    makeBigger(layouter.player);
-  }
-};
-
 const dimensionsCheck = function() {
-  if (!this.el) {
+  /**
+   * Set a layout class on a video-js element
+   *
+   * @function setLayout
+   * @param    {Player} player to apply the layout to
+   */
+  const setLayout = function(layouter) {
+    let el = layouter.player.el();
+    let layoutDefinition = layouter.options.layoutMap[layouter.currentLayout_];
+
+    if (layoutDefinition.layoutClassName !== 'defaults') {
+      videojs.addClass(el, layoutDefinition.layoutClassName);
+    }
+    layouter.options.layoutMap.forEach(function(element, index) {
+      if (index !== layouter.currentLayout_ && element.layoutClassName !== 'defaults') {
+        videojs.removeClass(el, element.layoutClassName);
+      }
+    });
+  };
+
+  /**
+   * Calculate for the giving dimensions which layout class of the layoutMap should be used
+   *
+   * @function setLayout
+   * @param    {Player} player to apply the layout to
+   */
+  const calculateLayout = function(layouter, playerWidth, controlBarWidth, controlWidth) {
+    let layoutMap = layouter.options.layoutMap;
+
+    if (controlBarWidth > playerWidth && layouter.currentLayout_ > 0) {
+      // smaller
+      layouter.currentLayout_--;
+      setLayout(layouter);
+      window.setTimeout(dimensionsCheck.bind(layouter), 1);
+    } else if (layouter.currentLayout_ < layoutMap.length - 1 &&
+      playerWidth >= layoutMap[layouter.currentLayout_ + 1].width * controlWidth
+    ) {
+      // bigger
+      layouter.currentLayout_++;
+      setLayout(layouter);
+      window.setTimeout(dimensionsCheck.bind(layouter), 1);
+    }
+  };
+
+  if (!this.el || this.player.usingNativeControls() ||
+    !isElementVisible(this.el.querySelectorAll('.vjs-control-bar')[0])
+  ) {
     return;
   }
   let playerWidth = this.getPlayerWidth();
   let controlWidth = this.getControlWidth();
   let controlBarWidth = this.getControlBarWidth();
 
-  if (this.options.updateVideoJsLayout) {
-    this.options.updateVideoJsLayout(this, playerWidth, controlBarWidth, controlWidth);
+  if (this.options.calculateLayout) {
+    this.options.calculateLayout(this, playerWidth, controlBarWidth, controlWidth);
   } else {
-    updateVideoJsLayout(this, playerWidth, controlBarWidth, controlWidth);
+    calculateLayout(this, playerWidth, controlBarWidth, controlWidth);
   }
 };
 
@@ -150,8 +118,18 @@ const installStylesheet = function() {
 
   if (!style) {
     let styleRule = `
+      /* Fixes for videojs/video.js#2902 */
       .vjs-responsive-layout .vjs-progress-control {
         min-width: 4em;
+      }
+      /* Fixes for videojs/video.js#2923 */
+      .vjs-responsive-layout.vjs-layout-x-small:not(.vjs-fullscreen):not(.vjs-audio)
+      .vjs-volume-menu-button {
+        display: none;
+      }
+      .video-js.vjs-responsive-layout.vjs-layout-x-small:not(.vjs-fullscreen)
+      .vjs-fullscreen-control {
+        display: block;
       }
     `;
     let head = document.getElementsByTagName('head')[0];
@@ -172,6 +150,7 @@ class Layouter {
   constructor(player, options) {
     this.player_ = player;
     this.options_ = options;
+    this.currentLayout_ = options.layoutMap.length - 1;
     this.debouncedCheckSize_ = debounce(options.debounceDelay, dimensionsCheck);
   }
 
@@ -217,7 +196,7 @@ class Layouter {
    * This function relies on the presence of the play control. If you
    * mess with it's visibility, things likely will break :)
    *
-   * @function getControlBarWidth
+   * @function getControlWidth
    * @return   {number} the width of the controlbar in pixels
    */
   getControlWidth() {
