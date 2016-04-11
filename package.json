@@ -61,7 +61,7 @@
   },
   "dependencies": {
     "throttle-debounce": "^0.1.1",
-    "video.js": "^5.0.0"
+    "video.js": "^5.8.0"
   },
   "devDependencies": {
     "babel": "^5.8.0",

@@ -74,7 +74,8 @@ const dimensionsCheck = function() {
   };
 
   /**
-   * Calculate for the giving dimensions which layout class of the layoutMap should be used
+   * Calculate for the giving dimensions which layout class of the layoutMap should be
+   * used
    *
    * @function setLayout
    * @param    {Player} player to apply the layout to
@@ -113,39 +114,6 @@ const dimensionsCheck = function() {
   }
 };
 
-const installStylesheet = function() {
-  let style = document.getElementById('vjs-responsive-layout');
-
-  if (!style) {
-    let styleRule = `
-      /* Fixes for videojs/video.js#2902 */
-      .vjs-responsive-layout .vjs-progress-control {
-        min-width: 4em;
-      }
-      /* Fixes for videojs/video.js#2923 */
-      .vjs-responsive-layout.vjs-layout-x-small:not(.vjs-fullscreen):not(.vjs-audio)
-      .vjs-volume-menu-button {
-        display: none;
-      }
-      .video-js.vjs-responsive-layout.vjs-layout-x-small:not(.vjs-fullscreen)
-      .vjs-fullscreen-control {
-        display: block;
-      }
-    `;
-    let head = document.getElementsByTagName('head')[0];
-
-    style = document.createElement('style');
-    style.id = 'vjs-responsive-layout';
-
-    if (style.styleSheet) {
-      style.styleSheet.cssText = styleRule;
-    } else {
-      style.textContent = styleRule;
-    }
-    head.insertBefore(style, head.firstChild);
-  }
-};
-
 class Layouter {
   constructor(player, options) {
     this.player_ = player;
@@ -155,7 +123,6 @@ class Layouter {
   }
 
   ready() {
-    installStylesheet();
     this.player.addClass('vjs-responsive-layout');
 
     this.windowResizeListener_ = window.addEventListener(
