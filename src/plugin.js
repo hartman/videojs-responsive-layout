@@ -64,7 +64,7 @@ const dimensionsCheck = function() {
     let layoutDefinition = layouter.options.layoutMap[layouter.currentLayout_];
 
     if (layoutDefinition.layoutClassName !== 'defaults') {
-      videojs.addClass(el, layoutDefinition.layoutClassName);
+      (videojs.dom || videojs).addClass(el, layoutDefinition.layoutClassName);
     }
     layouter.options.layoutMap.forEach(function(element, index) {
       if (index !== layouter.currentLayout_ && element.layoutClassName !== 'defaults') {
@@ -255,6 +255,6 @@ const responsiveLayout = function(options) {
 };
 
 // Register the plugin with video.js.
-videojs.plugin('responsiveLayout', responsiveLayout);
+(videojs.registerPlugin || videojs.plugin)('responsiveLayout', responsiveLayout);
 
 export default responsiveLayout;
