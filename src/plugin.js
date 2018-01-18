@@ -180,11 +180,12 @@ class Layouter {
     let controlBarWidth = 0;
     let cbElements = this.el.querySelectorAll('.vjs-control-bar > *');
 
-    Array.from(cbElements).forEach(function(el) {
+    for (var i = 0; i < cbElements.length; i++) {
+      var el = cbElements[i];
       if (isElementVisible(el)) {
         controlBarWidth += getElementOuterWidth(el);
       }
-    });
+    }
     return controlBarWidth;
   }
 
