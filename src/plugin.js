@@ -64,7 +64,7 @@ const dimensionsCheck = function() {
     let layoutDefinition = layouter.options.layoutMap[layouter.currentLayout_];
 
     if (layoutDefinition.layoutClassName !== 'defaults') {
-      videojs.addClass(el, layoutDefinition.layoutClassName);
+      (videojs.dom || videojs).addClass(el, layoutDefinition.layoutClassName);
     }
     layouter.options.layoutMap.forEach(function(element, index) {
       if (index !== layouter.currentLayout_ && element.layoutClassName !== 'defaults') {
@@ -180,11 +180,12 @@ class Layouter {
     let controlBarWidth = 0;
     let cbElements = this.el.querySelectorAll('.vjs-control-bar > *');
 
-    Array.from(cbElements).forEach(function(el) {
+    for (var i = 0; i < cbElements.length; i++) {
+      var el = cbElements[i];
       if (isElementVisible(el)) {
         controlBarWidth += getElementOuterWidth(el);
       }
-    });
+    }
     return controlBarWidth;
   }
 
@@ -255,6 +256,6 @@ const responsiveLayout = function(options) {
 };
 
 // Register the plugin with video.js.
-videojs.plugin('responsiveLayout', responsiveLayout);
+(videojs.registerPlugin || videojs.plugin)('responsiveLayout', responsiveLayout);
 
 export default responsiveLayout;
